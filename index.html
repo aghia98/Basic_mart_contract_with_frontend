@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Sample Web3 DApp</title>
+        <link rel="stylesheet" href="">
+        <head>  
+            <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"
+                type="application/javascript">     
+            </script>
+
+            <script type="application/javascript" src="contractConfig.js">
+                
+                
+            </script>
+
+            <script type="application/javascript">
+
+                    const {BankContractAddress, BankContractABI} = getContractInfos();
+                    
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    let signer; 
+                    let BankContract;
+                    provider.listAccounts().then((accounts)=>{
+                        signer = provider.getSigner(accounts[0]);
+                        BankContract = new ethers.Contract(BankContractAddress, BankContractABI, signer);
+                    });
+                    
+                    
+
+                const deposit=async()=>{
+                    const value = document.getElementById('money').value;
+                    const success = await BankContract.deposit({value: value});
+                    if(success){
+                        alert(value+' Wei successfully deposited');
+                    }
+                }
+
+                const withdraw=async()=>{
+                    const success = await BankContract.withdraw();
+                    if(success){
+                        alert('You have got back your money');
+                    }
+                }
+            </script>
+        </head>  
+    </head>
+    <body>
+        <h1>Simple Dapp sample</h1>
+        <h2>Deposit money and Withdraw it</h2>
+        <label for="money">Amount of Wei to deposit : </label>
+        <input type='number' id='money' />
+        <button onclick="deposit()">Deposit</button>
+        <br><br>
+        <button onclick="withdraw()">Withdraw</button>
+    </body>
+</html>
